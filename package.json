@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "dev:api": "bun run --hot api/src/index.ts",
+    "dev:engine": "bun run engine/engine.ts",
+    "dev:websocket": "bun run websocket/server.ts",
+    "dev:market": "bun run market-maker/index.ts"
+  }
+}
