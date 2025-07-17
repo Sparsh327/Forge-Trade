@@ -6,7 +6,7 @@ import {
   UpdateUserRoute,
 } from "@/routes/auth/auth.routes";
 import { AppRouteHandler } from "@/lib/types";
-import { User, users } from "@/db/schema/schema";
+import { User, users, balance } from "@/db/schema/schema";
 import * as HttpStatusCodes from "stoker/http-status-codes";
 import { randomUUIDv7 } from "bun";
 import { AuthHelper } from "@/helper/auth.helper";
@@ -23,18 +23,18 @@ export const signup: AppRouteHandler<SignupRoute> = async (c) => {
         name: data.name,
         email: data.email,
         password: data.password,
-        balance: "10000",
       })
       .returning();
+
     if (user.length === 0) {
       throw new Error("User not created");
     }
-    // const createdUser = user[0]!;
-    // const otpPayload = await AuthHelper.sendOtp(data.email);
-    // await db
-    //   .update(users)
-    //   .set({ otp: otpPayload.otp, otpExpiry: otpPayload.expiresAt })
-    //   .where(eq(users.id, createdUser.id));
+    await db.insert(balance).values({
+      id: randomUUIDv7(),
+      amount: "1000000",
+      currency: "USD",
+      userId: id,
+    });
 
     return c.json({ message: "User created successfully" }, HttpStatusCodes.OK);
   } catch (error) {
@@ -42,86 +42,6 @@ export const signup: AppRouteHandler<SignupRoute> = async (c) => {
     throw error;
   }
 };
-
-// export const verifyEmail: AppRouteHandler<VerifyEmailRoute> = async (c) => {
-//   try {
-//     const data = await c.req.json();
-//     const res = await db
-//       .select()
-//       .from(users)
-//       .where(eq(users.email, data.email))
-//       .limit(1);
-
-//     if (res.length === 0) {
-//       throw new Error("User not found");
-//     }
-
-//     let user = res[0]!;
-
-//     if (user.isEmailVerified) {
-//       return c.json(
-//         { message: "Email already verified" },
-//         HttpStatusCodes.UNPROCESSABLE_ENTITY
-//       );
-//     }
-
-//     validateOtp(data.otp, user);
-
-//     const updated = await db
-//       .update(users)
-//       .set({ isEmailVerified: true, otp: null, otpExpiry: null })
-//       .where(eq(users.id, user.id))
-//       .returning();
-
-//     if (updated.length === 0) {
-//       throw new Error("User not updated");
-//     }
-
-//     user = updated[0]!;
-//     const token = await AuthHelper.generateJwtToken(user);
-
-//     return c.json(
-//       {
-//         token,
-//         ...user,
-//       },
-//       HttpStatusCodes.OK
-//     );
-//   } catch (error) {
-//     throw error;
-//   }
-// };
-
-// export const resendOtp: AppRouteHandler<ResendOtpRoute> = async (c) => {
-//   try {
-//     const data = await c.req.json();
-//     const res = await db
-//       .select()
-//       .from(users)
-//       .where(eq(users.email, data.email))
-//       .limit(1);
-
-//     if (res.length === 0) {
-//       throw new Error("User not found");
-//     }
-
-//     let user = res[0]!;
-
-//     if (user.otpExpiry! > new Date()) {
-//       throw new Error("OTP already sent");
-//     }
-
-//     const otpPayload = await AuthHelper.sendOtp(data.email);
-//     await db
-//       .update(users)
-//       .set({ otp: otpPayload.otp, otpExpiry: otpPayload.expiresAt })
-//       .where(eq(users.id, user.id));
-
-//     return c.json({ message: "OTP sent successfully" }, HttpStatusCodes.OK);
-//   } catch (error) {
-//     throw error;
-//   }
-// };
 
 export const login: AppRouteHandler<LoginRoute> = async (c) => {
   try {
@@ -181,7 +101,12 @@ export const loginViaGoogle: AppRouteHandler<LoginViaGoogleRoute> = async (
       if (createdUser.length === 0) {
         throw new Error("User not created");
       }
-
+      await db.insert(balance).values({
+        id: randomUUIDv7(),
+        amount: "1000000",
+        currency: "USD",
+        userId: id,
+      });
       user = createdUser[0]!;
     } else {
       user = res[0]!;
@@ -199,37 +124,6 @@ export const loginViaGoogle: AppRouteHandler<LoginViaGoogleRoute> = async (
     throw error;
   }
 };
-
-// export const updatePassword: AppRouteHandler<UpdatePasswordRoute> = async (
-//   c
-// ) => {
-//   try {
-//     const data = await c.req.json();
-//     const res = await db
-//       .select()
-//       .from(users)
-//       .where(eq(users.email, data.email))
-//       .limit(1);
-
-//     if (res.length === 0) {
-//       throw new Error("User not found");
-//     }
-//     let user = res[0]!;
-//     validateOtp(data.otp, user);
-//     const hashedPassword = AuthHelper.hashPassword(data.password);
-//     const setRes = await db
-//       .update(users)
-//       .set({ password: hashedPassword, otp: null, otpExpiry: null })
-//       .where(eq(users.id, user.id))
-//       .returning();
-
-//     user = setRes[0]!;
-//     const token = await AuthHelper.generateJwtToken(user);
-//     return c.json({ token, ...user }, HttpStatusCodes.OK);
-//   } catch (error) {
-//     throw error;
-//   }
-// };
 
 export const updateUser: AppRouteHandler<UpdateUserRoute> = async (c) => {
   try {
@@ -254,16 +148,3 @@ export const updateUser: AppRouteHandler<UpdateUserRoute> = async (c) => {
     throw error;
   }
 };
-
-// function validateOtp(otp: string, user: User) {
-//   const date = new Date();
-
-//   if (user.otp !== otp) {
-//     throw new Error("Invalid OTP");
-//   }
-
-//   if (user.otpExpiry! < date) {
-//     throw new Error("OTP expired");
-//   }
-//   return;
-// }

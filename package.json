@@ -3,6 +3,16 @@
     "dev:api": "bun run --hot api/src/index.ts",
     "dev:engine": "bun run engine/engine.ts",
     "dev:websocket": "bun run websocket/server.ts",
-    "dev:market": "bun run market-maker/index.ts"
+    "dev:market": "bun run market-maker/index.ts",
+    "drizzle:generate": "drizzle-kit generate --config ./api/drizzle.config.ts",
+    "drizzle:migrate": "drizzle-kit migrate --config ./api/drizzle.config.ts",
+    "docker:up": "docker-compose -f ./docker/docker.compose.yaml up -d --build"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.4",
+    "drizzle-orm": "^0.44.3",
+    "pg": "^8.16.3",
+    "tsx": "^4.19.4"
+    
   }
 }

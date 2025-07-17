@@ -5,9 +5,6 @@ export const userSchema = z.object({
   name: z.string(),
   email: z.string().email(),
   isEmailVerified: z.boolean().default(false),
-   balance: z.string().refine((val) => !isNaN(Number(val)), {
-    message: "Invalid number string",
-  }),
   createdAt: z.date().nullable(),
   updatedAt: z.date().nullable(),
 });

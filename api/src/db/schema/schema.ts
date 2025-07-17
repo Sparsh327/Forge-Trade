@@ -15,13 +15,20 @@ export const users = pgTable("users", {
   email: varchar({ length: 255 }).notNull().unique(),
   isEmailVerified: boolean().notNull().default(false),
   password: varchar({ length: 255 }),
-  balance: numeric("amount", { precision: 20, scale: 8 })
-    .notNull()
-    .default("0"),
   ...timestamps,
 });
 
 export type User = InferSelectModel<typeof users>;
+
+export const balance = pgTable("balance", {
+  id: uuid().primaryKey(),
+  amount: numeric("amount", { precision: 20, scale: 8 }).notNull().default("0"),
+  currency: varchar({ length: 255 }).notNull(),
+  userId: uuid().references(() => users.id, { onDelete: "cascade" }),
+  ...timestamps,
+});
+
+export type Balance = InferSelectModel<typeof balance>;
 
 export const contact_us = pgTable("contact_us", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),

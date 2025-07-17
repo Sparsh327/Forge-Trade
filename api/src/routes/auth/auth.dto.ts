@@ -16,24 +16,10 @@ export const loginSchema = z.object({
 
 export type LoginSchema = z.infer<typeof loginSchema>;
 
-// export const verifyEmailSchema = z.object({
-//   email: z.string().email(),
-//   otp: z.string().length(6),
-// });
-
-// export type VerifyEmailSchema = z.infer<typeof verifyEmailSchema>;
-
 export const resendOtpSchema = z.object({
   email: z.string().email(),
 });
 export type ResendOtpSchema = z.infer<typeof resendOtpSchema>;
-
-// export const updatePasswordSchema = z.object({
-//   email: z.string().email(),
-//   password: z.string().min(8).max(20),
-//   otp: z.string().length(6),
-// });
-// export type UpdatePasswordSchema = z.infer<typeof updatePasswordSchema>;
 
 export const loginViaGoogleSchema = z.object({
   idToken: z.string(),
