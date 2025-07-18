@@ -3,7 +3,6 @@ import { z } from "@hono/zod-openapi";
 export const signupSchema = z.object({
   name: z.string().min(3),
   email: z.string().email(),
-  phone: z.string().min(10).max(15),
   password: z.string().min(8).max(20),
 });
 
@@ -27,8 +26,7 @@ export const loginViaGoogleSchema = z.object({
 export type LoginViaGoogleSchema = z.infer<typeof loginViaGoogleSchema>;
 
 export const updateUserSchema = z.object({
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
+  name: z.string().min(3),
 });
 export type UpdateUserSchema = z.infer<typeof updateUserSchema>;
 

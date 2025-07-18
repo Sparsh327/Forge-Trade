@@ -22,7 +22,7 @@ export const signup: AppRouteHandler<SignupRoute> = async (c) => {
         id: id,
         name: data.name,
         email: data.email,
-        password: data.password,
+        password: AuthHelper.hashPassword(data.password),
       })
       .returning();
 
@@ -69,6 +69,7 @@ export const login: AppRouteHandler<LoginRoute> = async (c) => {
       HttpStatusCodes.OK
     );
   } catch (error) {
+    console.error("Error logging in:", error);
     throw error;
   }
 };
@@ -132,7 +133,6 @@ export const updateUser: AppRouteHandler<UpdateUserRoute> = async (c) => {
       .update(users)
       .set({
         name: data.name,
-        email: data.email,
       })
       .where(eq(users.id, data.id))
       .returning();
@@ -142,7 +142,6 @@ export const updateUser: AppRouteHandler<UpdateUserRoute> = async (c) => {
     }
 
     const user = res[0]!;
-    const token = await AuthHelper.generateJwtToken(user);
     return c.json(user, HttpStatusCodes.OK);
   } catch (error) {
     throw error;
