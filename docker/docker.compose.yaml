@@ -1,14 +1,39 @@
 version: "3.8"
+
 services:
   forgePg:
     image: postgres:13-alpine
+    container_name: forgePg
     ports:
-      - "5434:5432"
+      - "5434:5432" # maps container's 5432 to host's 5434
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=forgePg
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  timescaledb:
+    image: timescale/timescaledb:latest-pg12
+    container_name: timescaledb
+    ports:
+      - "5435:5432" # maps container's 5432 to host's 5435
+    environment:
+      - POSTGRES_DB=my_database
+      - POSTGRES_USER=your_user
+      - POSTGRES_PASSWORD=your_password
+    volumes:
+      - timescale_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
 volumes:
   postgres_data:
+  timescale_data:
+  redis_data:
