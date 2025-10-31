@@ -6,7 +6,7 @@ import {
   UpdateUserRoute,
 } from "@/routes/auth/auth.routes";
 import { AppRouteHandler } from "@/lib/types";
-import { User, users, balance } from "@/db/schema/schema";
+import { User, users, balance, transactions } from "@/db/schema/schema";
 import * as HttpStatusCodes from "stoker/http-status-codes";
 import { randomUUIDv7 } from "bun";
 import { AuthHelper } from "@/helper/auth.helper";
@@ -31,9 +31,18 @@ export const signup: AppRouteHandler<SignupRoute> = async (c) => {
     }
     await db.insert(balance).values({
       id: randomUUIDv7(),
-      amount: "1000000",
-      currency: "USD",
+      available: "1000000",
+      locked: "0",
+      currency: "INR",
       userId: id,
+    });
+    await db.insert(transactions).values({
+      id: randomUUIDv7(),
+      userId: id,
+      type: "credit",
+      amount: "1000000",
+      asset: "INR",
+      referenceId: null,
     });
 
     return c.json({ message: "User created successfully" }, HttpStatusCodes.OK);
@@ -104,9 +113,18 @@ export const loginViaGoogle: AppRouteHandler<LoginViaGoogleRoute> = async (
       }
       await db.insert(balance).values({
         id: randomUUIDv7(),
-        amount: "1000000",
-        currency: "USD",
+        locked: "0",
+        available: "1000000",
+        currency: "INR",
         userId: id,
+      });
+      await db.insert(transactions).values({
+        id: randomUUIDv7(),
+        userId: id,
+        type: "credit",
+        amount: "1000000",
+        asset: "INR",
+        referenceId: null,
       });
       user = createdUser[0]!;
     } else {

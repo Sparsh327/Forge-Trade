@@ -8,6 +8,13 @@
       "when": 1752691354149,
       "tag": "0000_blue_human_fly",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1761913737163,
+      "tag": "0001_handy_moon_knight",
+      "breakpoints": true
     }
   ]
 }

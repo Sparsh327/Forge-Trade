@@ -1,10 +1,8 @@
-import env from "./src/env";
 import { defineConfig } from "drizzle-kit";
-import path from "path";
 
 export default defineConfig({
-  schema: path.resolve(__dirname, "src/db/schema/schema.ts"),
-  out: path.resolve(__dirname, "src/db/migrations"),
+  schema: "./api/src/db/schema/schema.ts", // 👈 fix here
+  out: "./api/src/db/migrations", // 👈 fix here too
   dialect: "postgresql",
   casing: "snake_case",
   dbCredentials: {
