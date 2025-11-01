@@ -1,6 +1,6 @@
 // src/index.ts
 import { RedisManager } from "./RedisManager";
-import { Engine } from "./Engine";
+import { Engine } from "./trade/Engine";
 
 async function main() {
   const redisManager = RedisManager.getInstance();
@@ -13,7 +13,8 @@ async function main() {
     if (msg) {
       try {
         const parsed = JSON.parse(msg);
-        // engine.process(parsed);
+        console.log("Received message:", parsed);
+        engine.process(parsed);
       } catch (err) {
         console.error("❌ Failed to parse message", err);
       }
